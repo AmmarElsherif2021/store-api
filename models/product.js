@@ -28,4 +28,4 @@ const schema = new mongoose.Schema({
         message: '{VALUE} is not allowed'
     }
 })
-module.exports = mongoose.model('Product', schema)
+module.exports = mongoose.model('Product', schema, 'store-api')
