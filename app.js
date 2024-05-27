@@ -1,77 +1,68 @@
-//To connect db
+// To connect db
 require('dotenv').config();
+// Path
+const path = require('path');
+// HTTP
+const http = require('http');
 
-// require express
+// Require express
 const express = require('express');
-require('express-async-errors')
-//app
+require('express-async-errors');
+// App
 const app = express();
 
-//handle errors  
-const errHandler = require('./middleware/error-handler')
-const notFound = require('./middleware/not-found')
+// Handle errors  
+const errHandler = require('./middleware/error-handler');
+const notFound = require('./middleware/not-found');
 
 console.log('04 Store API');
 
-// connect db
+// Connect db
 const connectDB = require('./db/connect');
 
-
-//middleware
+// Middleware
 app.use(express.json());
 
-//rootes
+// CORS
+const cors = require('cors');
+app.use(cors());
+
+// Serve static files from the React app build directory
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Routes
 app.get('/', (req, res) => {
-    res.send('<h1>Store Api</h1><a href="/api/v1/products">products route</a>')
-})
-//get products route
+    // Send the index.html file from the React app build directory
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
+// Route
 const productsRouter = require('./routes/products');
 
-
-//use middleware products api 
+// Use middleware products api 
 app.use("/api/v1/products", productsRouter);
 
-//handle errors mid-wares
+// Handle errors middlewares
 app.use(notFound);
-app.use(errHandler)
+app.use(errHandler);
 
-//listen to server
+// Set the maximum header size to 16KB and create server
+const server = http.createServer({
+    maxHeaderSize: 16384
+}, app);
+
+// Listen to server
 const port = process.env.PORT || 3000;
-//require('./populate')
+
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI);
-        console.log('read db ?!')
-        app.listen(port, () => console.log(`Server is listening port ${port}`))
+        console.log('Connected to DB');
+        // Use the server to listen on the specified port
+        server.listen(port, () => console.log(`Server is listening on port ${port}`));
     } catch (err) {
-        console.log(`err --- >  ${err}`);
+        console.log(`Error: ${err}`);
     }
 };
+
 start();
-
-
-/*
-const connectDb = require('./db/connect')
-const express = require('express');
-const tasks = require('./routes/tasks')
-require('dotenv').config()
-const notFound = require('./middleware/notFound')
-const app = express();
-
-app.use(express.json())
-app.use('/api/v1/tasks', tasks);
-
-app.use(express.static('./public'))
-app.use(notFound)
-
-const start = async () => {
-    const port = 3000;
-    try {
-        await connectDb(process.env.MONGO_URI)
-        app.listen(port, () => console.log(`app is listening to port: ${port}`));
-    } catch (err) {
-        console.log(` ! ------> ${err}`)
-    }
-}
-start()
-*/
