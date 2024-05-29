@@ -75,7 +75,8 @@ getAllProducts = async (req, res) => {
 getATrialMsg = async (req, res) => {
     console.log('Exposing Trial msg ');
     res.status(200).json({ msg: 'trial msg' })
-}
-module.exports = {
-    getAllProducts, getAllProductsStatic, getATrialMsg
-}
+},
+
+    module.exports = {
+        getAllProducts, getAllProductsStatic, getATrialMsg
+    }
