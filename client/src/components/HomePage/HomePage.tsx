@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../../layout/Navbar/Navbar';
 import axios from 'axios';
 
+import TopRated from './TopRated/TopRated';
+
+import Footer from './Footer/Footer';
+
+// hash link
+import { HashLink as Link } from 'react-router-hash-link';
 
 
 const HomePage: React.FC = () => {
@@ -46,9 +51,50 @@ const HomePage: React.FC = () => {
         fetchProducts();
     }, []);
 
+
+
     return (
         <div>
-            <h1>HOME   ... </h1>
+            <div className="hero-container">
+                <h1 className="hero-title">Welcome to Our Awesome Website</h1>
+                <h3 className="hero-subtitle">
+                    Discover amazing features and services!
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis
+                    et libero. Nullam nec justo vel nunc tincidunt facilisis.
+                    Sed vel metus nec elit lacinia cursus. Fusce euismod,
+                    justo vel bibendum dignissim, elit nunc tincidunt justo,
+                    in tincidunt elit ex id libero. Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel
+                    nunc tincidunt facilisis. Sed vel metus nec elit lacinia cursus. Fusce euismod, justo vel bibendum dignissim,
+                    elit nunc tincidunt justo, in tincidunt elit ex id libero.
+
+                    Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nulla facilisi. Sed euismod, quam nec bibendum tincidunt, odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel nunc tincidunt facilisis. Sed vel metus nec elit lacinia cursus. Fusce euismod, justo vel bibendum dignissim, elit nunc tincidunt justo, in tincidunt elit ex id libero. Sed euismod, quam nec bibendum tincidunt, odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel nunc tincidunt facilisis. Sed vel metus nec
+                    Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis
+                    et libero. Nullam nec justo vel nunc tincidunt facilisis.
+                    Sed vel metus nec elit lacinia cursus. Fusce euismod,
+                    justo vel bibendum dignissim, elit nunc tincidunt justo,
+                    in tincidunt elit ex id libero. Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel
+                    nunc tincidunt facilisis. Sed vel metus nec elit lacinia cursus. Fusce euismod, justo vel bibendum dignissim,
+                    elit nunc tincidunt justo, in tincidunt elit ex id libero.
+                    estibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nulla facilisi. Sed euismod, quam nec bibendum tincidunt, odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel nunc tincidunt facilisis. Sed vel metus nec elit lacinia cursus. Fusce euismod, justo vel bibendum dignissim, elit nunc tincidunt justo, in tincidunt elit ex id libero. Sed euismod, quam nec bibendum tincidunt, odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel nunc tincidunt facilisis. Sed vel metus nec
+                    Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis
+                    et libero. Nullam nec justo vel nunc tincidunt facilisis.
+                    Sed vel metus nec elit lacinia cursus. Fusce euismod,
+                    justo vel bibendum dignissim, elit nunc tincidunt justo,
+                    in tincidunt elit ex id libero. Sed euismod, quam nec bibendum tincidunt,
+                    odio libero tincidunt justo, vel tincidunt nunc turpis et libero. Nullam nec justo vel
+                    nunc tincidunt facilisis. Sed vel metus nec elit lacinia cursus. Fusce euismod, justo vel bibendum dignissim,
+                    elit nunc tincidunt justo, in tincidunt elit ex id libero.
+                </h3>
+                <button className="hero-button">
+                    <Link smooth to="#top-rated">Get Started</Link>
+                </button>
+            </div>
             <ul>
 
                 {
@@ -57,6 +103,12 @@ const HomePage: React.FC = () => {
                     ))
                 }
             </ul>
+
+
+            {/* list of top rated 10 products ------------------------------------------------------------------- */}
+
+            <div id="top-rated"><TopRated /></div>
+            <Footer />
         </div>
     );
 };
