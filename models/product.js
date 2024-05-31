@@ -26,6 +26,10 @@ const schema = new mongoose.Schema({
             values: ['ikea', 'liddy', 'caressa', 'marcos']
         },
         message: '{VALUE} is not allowed'
+    },
+    image: {
+        type: Buffer
     }
+
 })
 module.exports = mongoose.model('Product', schema, 'store-api')

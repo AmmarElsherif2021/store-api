@@ -1,9 +1,12 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import ListSubheader from '@mui/material/ListSubheader';
+import IconButton from '@mui/material/IconButton';
 import Pagination from './Pagination';
-
-
+import { Buffer } from 'buffer';
 
 const ProductPage: React.FC = () => {
     const [products, setProducts] = useState<ProductState>({
@@ -11,11 +14,11 @@ const ProductPage: React.FC = () => {
         loading: true,
         error: null,
     });
-
+    const pageLimit = 5;
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('/api/v1/products?fields=name,company,price,rating');
+                const response = await axios.get('/api/v1/products?fields=name,company,price,rating,image');
                 setProducts({
                     products: response.data.products,
                     loading: false,
@@ -46,27 +49,44 @@ const ProductPage: React.FC = () => {
         fetchProducts();
     }, []);
 
-    //Paginate.......................................................................................
-    const pageLimit = 10;
+
     const [pageProducts, setPageProducts] = useState(products.products);
 
     return (
         <div>
             {products.products && products.products.length > 0 ? (
-                <li>
-                    {pageProducts && pageProducts.map((p: Product | null, i: number) => (
-                        <li key={i}>{JSON.stringify(p)}</li>
+                <ImageList sx={{ width: '99%', height: 450 }}>
+                    <ImageListItem key="Subheader" cols={2}>
+                        <ListSubheader component="div">December</ListSubheader>
+                    </ImageListItem>
+                    {products.products.map((item) => (
+                        <ImageListItem key={item._id}>
+                            {item.image ? (
+                                <img
+                                    src={`data:image/jpg;base64,${Buffer.from(item.image.data).toString('base64')}`}
+                                    alt={item.name}
+                                    loading="eager"
+                                />
+                            ) : (
+                                <p>No image available</p>
+                            )}
+                            <ImageListItemBar
+                                title={item.name}
+                                subtitle={item.company}
+                                actionIcon={
+                                    <IconButton
+                                        sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                                        aria-label={`info about ${item.name}`}
+                                    />
+                                }
+                            />
+                        </ImageListItem>
                     ))}
-                </li>
+                </ImageList>
             ) : (
                 <p>No products available.</p>
             )}
-
-            <Pagination
-                items={products.products}
-                pageLimit={pageLimit}
-                setPageItems={setPageProducts}
-            />
+            <Pagination items={pageProducts} pageLimit={pageLimit} setPageItems={setPageProducts} />
         </div>
     );
 };

@@ -6,13 +6,13 @@ declare module '../../layout/Navbar/Navbar';
 declare global {
     interface Product {
         _id: Key;
-        name: String;
-        price: Number;
-        featured: Boolean;//false
-        rating: Number;//4.5
+        name: string;
+        price: number;
+        featured: boolean;//false
+        rating: number;//4.5
         createdAt: Date;// Date.now(),
-
-        company: String;//enums: {values: ['ikea', 'liddy', 'caressa', 'marcos']},
+        image: { type: string, data: number[] };
+        company: string;//enums: {values: ['ikea', 'liddy', 'caressa', 'marcos']},
     }
     interface ProductState {
         [x: string]: any;

@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('/api/v1/products?fields=name,company,price,rating');
+                const response = await axios.get('/api/v1/products?fields=name,company,price,rating,image');
                 setProducts({
                     products: response.data.products,
                     loading: false,
@@ -98,16 +98,16 @@ const HomePage: React.FC = () => {
             <ul>
 
                 {
-                    products.products?.map((product) => (
-                        <li key={product._id}>{JSON.stringify(product)}</li>
-                    ))
+                    /* products.products?.map((product) => (
+                         <li key={product._id}>{JSON.stringify(product)}</li>
+                     ))*/
                 }
             </ul>
 
 
             {/* list of top rated 10 products ------------------------------------------------------------------- */}
 
-            <div id="top-rated"><TopRated /></div>
+            <div id="top-rated"><TopRated products={products} /></div>
             <Footer />
         </div>
     );

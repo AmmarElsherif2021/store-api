@@ -10,7 +10,7 @@ getAllProductsStatic = async (req, res) => {
 //query specific products
 getAllProducts = async (req, res) => {
     console.log(req.query);
-    const { featured, company, name, rating, fields, sort, numericFilters } = req.query;
+    const { featured, company, name, rating, fields, sort, numericFilters, image } = req.query;
     const queryObject = {};
 
     // Correctly convert the featured flag to a boolean
@@ -46,6 +46,9 @@ getAllProducts = async (req, res) => {
                 queryObject[field] = { [filtersMap[operator]]: Number(value) };
             }
         });
+    }
+    if (image) {
+        queryObject.image = image;
     }
 
     // Implement select and sort functionalities
