@@ -15,15 +15,37 @@ const ProductPage: React.FC = () => {
         error: null,
     });
     const pageLimit = 5;
+    const [page, setPage] = useState(1);
+    const [nextData, setNextData] = useState<{ page: number, data: Product[] }>(
+        {
+            page: 1,
+            data: []
+        });
+
+    //get nextData
+    const getNextData = async () => {
+        try {
+            const res = await axios.get(`/api/v1/products?page=${page + 1}&fields=name,company,price,rating,image`);
+            setNextData({
+                page: page + 1,
+                data: res.data.products
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('/api/v1/products?fields=name,company,price,rating,image');
+                const response = nextData.data.length == 0 && page !== nextData.page ? await axios.get(`/api/v1/products?page=${page}&fields=name,company,price,rating,image`) : { data: { products: [...nextData.data] } };
                 setProducts({
                     products: response.data.products,
                     loading: false,
                     error: null,
                 });
+                getNextData();
                 if (response.data.products && response.data.products.length) {
                     console.log(response.data.products);
                 } else {
@@ -47,15 +69,16 @@ const ProductPage: React.FC = () => {
             }
         };
         fetchProducts();
-    }, []);
+    }, [page]);
 
 
-    const [pageProducts, setPageProducts] = useState(products.products);
+    useEffect(() => console.log('page updated'), [page]);
 
     return (
         <div>
+
             {products.products && products.products.length > 0 ? (
-                <ImageList sx={{ width: '99%', height: 450 }}>
+                <ImageList sx={{ width: '99%', height: '80%' }}>
                     <ImageListItem key="Subheader" cols={2}>
                         <ListSubheader component="div">December</ListSubheader>
                     </ImageListItem>
@@ -63,7 +86,7 @@ const ProductPage: React.FC = () => {
                         <ImageListItem key={item._id}>
                             {item.image ? (
                                 <img
-                                    src={`data:image/jpg;base64,${Buffer.from(item.image.data).toString('base64')}`}
+                                    src={`data: image / jpg; base64, ${Buffer.from(item.image.data).toString('base64')} `}
                                     alt={item.name}
                                     loading="eager"
                                 />
@@ -76,19 +99,22 @@ const ProductPage: React.FC = () => {
                                 actionIcon={
                                     <IconButton
                                         sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
-                                        aria-label={`info about ${item.name}`}
+                                        aria-label={`info about ${item.name} `}
                                     />
                                 }
                             />
                         </ImageListItem>
                     ))}
                 </ImageList>
-            ) : (
+            ) : products.loading ? (<p>LOADING</p>) : (
                 <p>No products available.</p>
             )}
-            <Pagination items={pageProducts} pageLimit={pageLimit} setPageItems={setPageProducts} />
+            <button onClick={() => setPage((p) => p != 1 ? p - 1 : 1)} >-</button>
+            {page}
+            <button onClick={() => setPage(p => p + 1)}>+</button>
         </div>
     );
 };
 
 export default ProductPage;
+//<Pagination items={pageProducts} pageLimit={pageLimit} setPageItems={setPageProducts} />
