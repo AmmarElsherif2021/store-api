@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -15,37 +15,26 @@ const ProductPage: React.FC = () => {
         error: null,
     });
     const pageLimit = 5;
-    const [page, setPage] = useState(1);
-    const [nextData, setNextData] = useState<{ page: number, data: Product[] }>(
-        {
-            page: 1,
-            data: []
-        });
+    const [page, setPage] = useState<number>(1);
 
-    //get nextData
-    const getNextData = async () => {
-        try {
-            const res = await axios.get(`/api/v1/products?page=${page + 1}&fields=name,company,price,rating,image`);
-            setNextData({
-                page: page + 1,
-                data: res.data.products
-            });
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
+    // Memoize the API response
+    const memorizedResponse = useMemo(() => {
+        return axios.get(`/api/v1/products?page=${page}&fields=name,company,price,rating,image`);
+    }, [page]);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = nextData.data.length == 0 && page !== nextData.page ? await axios.get(`/api/v1/products?page=${page}&fields=name,company,price,rating,image`) : { data: { products: [...nextData.data] } };
+                let response: { data: { products: Product[] } } = { data: { products: [] } };
+
+                response = await memorizedResponse;
+
                 setProducts({
                     products: response.data.products,
                     loading: false,
                     error: null,
                 });
-                getNextData();
+
                 if (response.data.products && response.data.products.length) {
                     console.log(response.data.products);
                 } else {
@@ -68,11 +57,26 @@ const ProductPage: React.FC = () => {
                 });
             }
         };
+
         fetchProducts();
+    }, [memorizedResponse]);
+
+    useEffect(() => {
+        console.log('page updated');
     }, [page]);
 
+    // Handle pagination
+    function handleBack() {
+        setPage((p) => (p !== 1 ? p - 1 : 1));
+    }
 
-    useEffect(() => console.log('page updated'), [page]);
+    function handleForward() {
+        setPage((p: number) => p + 1);
+        setProducts((p) => ({
+            ...p,
+            loading: true,
+        }));
+    }
 
     return (
         <div>
@@ -109,12 +113,12 @@ const ProductPage: React.FC = () => {
             ) : products.loading ? (<p>LOADING</p>) : (
                 <p>No products available.</p>
             )}
-            <button onClick={() => setPage((p) => p != 1 ? p - 1 : 1)} >-</button>
+            <button onClick={handleBack} >-</button>
             {page}
-            <button onClick={() => setPage(p => p + 1)}>+</button>
+            <button onClick={handleForward}>+</button>
         </div>
     );
 };
 
 export default ProductPage;
-//<Pagination items={pageProducts} pageLimit={pageLimit} setPageItems={setPageProducts} />
+//<Pagination items={pageProducts} pageLimit={pageLimit} setPageItems={setPageProducts} />    
